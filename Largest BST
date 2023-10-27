@@ -1,0 +1,50 @@
+Given a binary tree. Find the size of its largest subtree that is a Binary Search Tree.
+Note: Here Size is equal to the number of nodes in the subtree.
+
+Example 1:
+
+Input:
+        1
+      /   \
+     4     4
+   /   \
+  6     8
+Output: 1
+Explanation: There's no sub-tree with size
+greater than 1 which forms a BST. All the
+leaf Nodes are the BSTs with size equal
+to 1.
+
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def largestBSTSubtreeSize(root):
+    def largestBST(root):
+        if root is None:
+            return True, 0, float('inf'), float('-inf')
+
+        left_is_bst, left_size, left_min, left_max = largestBST(root.left)
+        right_is_bst, right_size, right_min, right_max = largestBST(root.right)
+
+        if left_is_bst and right_is_bst and left_max < root.val < right_min:
+            size = left_size + right_size + 1
+            return True, size, min(left_min, root.val), max(right_max, root.val)
+        else:
+            return False, max(left_size, right_size), float('-inf'), float('inf')
+
+    is_bst, size, _, _ = largestBST(root)
+    return size
+
+# Example usage
+root = TreeNode(1)
+root.left = TreeNode(4)
+root.right = TreeNode(4)
+root.left.left = TreeNode(6)
+root.left.right = TreeNode(8)
+result = largestBSTSubtreeSize(root)
+print(result)
